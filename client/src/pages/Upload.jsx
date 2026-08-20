@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
@@ -220,11 +219,7 @@ const Upload = () => {
       formData.append("file", selectedFile);
       formData.append("model", selectedModel);
 
-      const response = await api.post("/predict", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post("/predict", formData);
 
       const predictionResult = response.data;
 
