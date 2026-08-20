@@ -75,14 +75,19 @@ function NetworkCharts({ analysis }) {
   const barData = useMemo(() => {
     const models = analysis?.modelMetrics;
 
-    if (!models) return [];
+    if (!models || typeof models !== "object") {
+      return [];
+    }
 
-    return Object.entries(models).map(([algorithm, metric]) => ({
-      algorithm,
-      accuracy: Number(metric.accuracy),
-    }));
+    return Object.entries(models)
+      .map(([algorithm, metrics]) => ({
+        algorithm,
+        accuracy: Number(metrics?.accuracy),
+      }))
+      .filter((item) => item.algorithm && Number.isFinite(item.accuracy));
   }, [analysis]);
 
+  console.log("MODEL METRICS RAW:", analysis?.modelMetrics);
   console.log("BAR DATA:", barData);
 
   console.log(barData);
@@ -412,11 +417,12 @@ function NetworkCharts({ analysis }) {
               />
 
               <YAxis
-                domain={[99, 100]}
+                domain={[0, 105]}
                 stroke="#94a3b8"
                 tick={{ fontSize: 12 }}
                 axisLine={false}
                 tickLine={false}
+                tickFormatter={(value) => `${value}%`}
               />
 
               <Tooltip
