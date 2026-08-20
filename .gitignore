@@ -1,22 +1,27 @@
-# Python virtual environment
-.venv/
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Environment variables / secrets
+# Environment variables
 .env
 .env.*
+!.env.example
 
-# Node dependencies
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node.js
 node_modules/
 
-# Frontend production build
-dist/
+# Frontend build
+client/dist/
 
-# ML datasets - not required for production deployment
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Machine learning datasets
 backend/ml/datasets/
-
-# ML evaluation outputs - development/research artifacts
-backend/ml/evaluation/
