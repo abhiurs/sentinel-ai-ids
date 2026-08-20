@@ -1,0 +1,22 @@
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Node dependencies
+node_modules/
+
+# Frontend production build
+dist/
+
+# ML datasets - not required for production deployment
+backend/ml/datasets/
+
+# ML evaluation outputs - development/research artifacts
+backend/ml/evaluation/

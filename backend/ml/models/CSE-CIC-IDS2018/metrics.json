@@ -1,0 +1,47 @@
+{
+    "dataset": "CSE-CIC-IDS2018",
+    "best_model": "XGBoost",
+    "total_models": 5,
+    "models": {
+        "XGBoost": {
+            "accuracy": 100.0,
+            "precision": 100.0,
+            "recall": 100.0,
+            "f1_score": 100.0,
+            "training_time_seconds": 183.39,
+            "prediction_time_seconds": 1.7617
+        },
+        "Decision Tree": {
+            "accuracy": 100.0,
+            "precision": 100.0,
+            "recall": 100.0,
+            "f1_score": 100.0,
+            "training_time_seconds": 138.79,
+            "prediction_time_seconds": 1.9822
+        },
+        "Random Forest": {
+            "accuracy": 100.0,
+            "precision": 100.0,
+            "recall": 100.0,
+            "f1_score": 100.0,
+            "training_time_seconds": 980.91,
+            "prediction_time_seconds": 4.7989
+        },
+        "Extra Trees": {
+            "accuracy": 99.96,
+            "precision": 99.96,
+            "recall": 99.96,
+            "f1_score": 99.96,
+            "training_time_seconds": 599.93,
+            "prediction_time_seconds": 6.7434
+        },
+        "KNN": {
+            "accuracy": 99.94,
+            "precision": 99.94,
+            "recall": 99.94,
+            "f1_score": 99.94,
+            "training_time_seconds": 0.53,
+            "prediction_time_seconds": 34.5715
+        }
+    }
+}

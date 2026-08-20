@@ -1,0 +1,47 @@
+{
+    "dataset": "UNSW-NB15",
+    "best_model": "XGBoost",
+    "total_models": 5,
+    "models": {
+        "XGBoost": {
+            "accuracy": 90.79,
+            "precision": 90.78,
+            "recall": 90.79,
+            "f1_score": 90.78,
+            "training_time_seconds": 3.11,
+            "prediction_time_seconds": 0.0635
+        },
+        "Random Forest": {
+            "accuracy": 90.77,
+            "precision": 90.76,
+            "recall": 90.77,
+            "f1_score": 90.76,
+            "training_time_seconds": 19.63,
+            "prediction_time_seconds": 0.2376
+        },
+        "Extra Trees": {
+            "accuracy": 89.48,
+            "precision": 89.91,
+            "recall": 89.48,
+            "f1_score": 89.51,
+            "training_time_seconds": 9.12,
+            "prediction_time_seconds": 0.2806
+        },
+        "Decision Tree": {
+            "accuracy": 88.15,
+            "precision": 88.15,
+            "recall": 88.15,
+            "f1_score": 88.13,
+            "training_time_seconds": 2.64,
+            "prediction_time_seconds": 0.0091
+        },
+        "KNN": {
+            "accuracy": 84.25,
+            "precision": 84.27,
+            "recall": 84.25,
+            "f1_score": 84.26,
+            "training_time_seconds": 0.49,
+            "prediction_time_seconds": 82.7317
+        }
+    }
+}

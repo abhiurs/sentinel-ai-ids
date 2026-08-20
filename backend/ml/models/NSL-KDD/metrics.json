@@ -1,0 +1,47 @@
+{
+    "dataset": "NSL-KDD",
+    "best_model": "XGBoost",
+    "total_models": 5,
+    "models": {
+        "XGBoost": {
+            "accuracy": 99.7,
+            "precision": 99.66,
+            "recall": 99.7,
+            "f1_score": 99.68,
+            "training_time_seconds": 75.24,
+            "prediction_time_seconds": 0.6361
+        },
+        "Random Forest": {
+            "accuracy": 99.67,
+            "precision": 99.63,
+            "recall": 99.67,
+            "f1_score": 99.62,
+            "training_time_seconds": 5.77,
+            "prediction_time_seconds": 0.7529
+        },
+        "Decision Tree": {
+            "accuracy": 99.48,
+            "precision": 99.5,
+            "recall": 99.48,
+            "f1_score": 99.48,
+            "training_time_seconds": 0.46,
+            "prediction_time_seconds": 0.01
+        },
+        "Extra Trees": {
+            "accuracy": 99.46,
+            "precision": 99.42,
+            "recall": 99.46,
+            "f1_score": 99.38,
+            "training_time_seconds": 5.52,
+            "prediction_time_seconds": 0.7548
+        },
+        "KNN": {
+            "accuracy": 99.06,
+            "precision": 98.99,
+            "recall": 99.06,
+            "f1_score": 99.0,
+            "training_time_seconds": 0.2,
+            "prediction_time_seconds": 36.312
+        }
+    }
+}

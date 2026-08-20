@@ -1,0 +1,47 @@
+{
+    "dataset": "CICIDS2017",
+    "best_model": "XGBoost",
+    "total_models": 5,
+    "models": {
+        "XGBoost": {
+            "accuracy": 99.89,
+            "precision": 99.88,
+            "recall": 99.89,
+            "f1_score": 99.88,
+            "training_time_seconds": 891.94,
+            "prediction_time_seconds": 7.18
+        },
+        "Decision Tree": {
+            "accuracy": 99.86,
+            "precision": 99.85,
+            "recall": 99.86,
+            "f1_score": 99.85,
+            "training_time_seconds": 86.06,
+            "prediction_time_seconds": 0.1728
+        },
+        "Random Forest": {
+            "accuracy": 99.85,
+            "precision": 99.84,
+            "recall": 99.85,
+            "f1_score": 99.84,
+            "training_time_seconds": 678.99,
+            "prediction_time_seconds": 5.8523
+        },
+        "Extra Trees": {
+            "accuracy": 99.7,
+            "precision": 99.7,
+            "recall": 99.7,
+            "f1_score": 99.65,
+            "training_time_seconds": 310.18,
+            "prediction_time_seconds": 6.7068
+        },
+        "KNN": {
+            "accuracy": 99.41,
+            "precision": 99.4,
+            "recall": 99.41,
+            "f1_score": 99.39,
+            "training_time_seconds": 0.48,
+            "prediction_time_seconds": 45.6173
+        }
+    }
+}
