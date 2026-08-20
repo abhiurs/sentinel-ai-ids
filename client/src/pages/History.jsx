@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/api";
 
 function History() {
   const [history, setHistory] = useState([]);
@@ -10,11 +10,12 @@ function History() {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:5000/api/history/");
+      const res = await api.get("/api/history/");
 
-      setHistory(res.data.history);
+      setHistory(res.data.history || []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch analysis history:", err);
+      setHistory([]);
     }
   };
 
@@ -48,6 +49,14 @@ function History() {
                 <td className="p-4">{item.confidence}%</td>
               </tr>
             ))}
+
+            {history.length === 0 && (
+              <tr>
+                <td colSpan="4" className="p-6 text-center text-slate-400">
+                  No analysis history available.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
