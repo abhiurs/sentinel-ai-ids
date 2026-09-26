@@ -1,7 +1,10 @@
+import os
+
 from flask import Blueprint, jsonify, request
 
 from ml.live.packet_capture import live_capture
 from ml.live.packet_store import packet_store
+from ml.live.remote_store import remote_live_store
 from utils.auth_middleware import token_required
 
 live_bp = Blueprint(
@@ -9,6 +12,91 @@ live_bp = Blueprint(
     __name__,
     url_prefix="/api/live",
 )
+
+# ==========================================================
+# LOCAL SENSOR INGESTION
+# ==========================================================
+
+
+@live_bp.route(
+    "/ingest",
+    methods=["POST"],
+)
+def ingest_live_data():
+
+    sensor_key = os.getenv("LIVE_SENSOR_KEY")
+
+    received_key = request.headers.get("X-Live-Sensor-Key")
+
+    if not sensor_key:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Live sensor is not configured",
+                }
+            ),
+            503,
+        )
+
+    if received_key != sensor_key:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Unauthorized live sensor",
+                }
+            ),
+            401,
+        )
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Invalid JSON payload",
+                }
+            ),
+            400,
+        )
+
+    packets = data.get("packets", [])
+    detections = data.get("detections", [])
+
+    selected_model = data.get(
+        "selected_model",
+        "Auto",
+    )
+
+    model_used = data.get(
+        "model_used",
+        "XGBoost",
+    )
+
+    if not isinstance(packets, list):
+        packets = []
+
+    if not isinstance(detections, list):
+        detections = []
+
+    remote_live_store.update(
+        packets=packets,
+        detections=detections,
+        selected_model=selected_model,
+        model_used=model_used,
+    )
+
+    return jsonify(
+        {
+            "success": True,
+            "packets": len(packets),
+            "detections": len(detections),
+        }
+    )
 
 
 # ==========================================================
@@ -72,7 +160,7 @@ def stop_capture(payload):
 @token_required
 def capture_status(payload):
 
-    return jsonify(live_capture.status())
+    return jsonify(remote_live_store.status())
 
 
 # ==========================================================
@@ -87,10 +175,12 @@ def capture_status(payload):
 @token_required
 def get_packets(payload):
 
+    packets = remote_live_store.get_packets()
+
     return jsonify(
         {
-            "count": packet_store.count(),
-            "packets": packet_store.get_all(),
+            "count": len(packets),
+            "packets": packets,
         }
     )
 
@@ -107,7 +197,7 @@ def get_packets(payload):
 @token_required
 def get_detections(payload):
 
-    detections = live_capture.get_detections()
+    detections = remote_live_store.get_detections()
 
     return jsonify(
         {
@@ -129,7 +219,7 @@ def get_detections(payload):
 @token_required
 def get_model(payload):
 
-    return jsonify(live_capture.get_selected_model())
+    return jsonify(remote_live_store.get_model())
 
 
 # ==========================================================
@@ -160,13 +250,49 @@ def set_model(payload):
             400,
         )
 
-    result = live_capture.set_model(model_name)
+    if model_name == "Auto":
 
-    if not result["success"]:
+        remote_live_store.selected_model = "Auto"
+        remote_live_store.model_used = "XGBoost"
 
-        return jsonify(result), 400
+        return jsonify(
+            {
+                "success": True,
+                "selected_model": "Auto",
+                "model_used": "XGBoost",
+            }
+        )
 
-    return jsonify(result)
+    supported_models = [
+        "Random Forest",
+        "Extra Trees",
+        "XGBoost",
+        "Decision Tree",
+        "KNN",
+    ]
+
+    if model_name not in supported_models:
+
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Unsupported model",
+                }
+            ),
+            400,
+        )
+
+    remote_live_store.selected_model = model_name
+    remote_live_store.model_used = model_name
+
+    return jsonify(
+        {
+            "success": True,
+            "selected_model": model_name,
+            "model_used": model_name,
+        }
+    )
 
 
 # ==========================================================
@@ -210,7 +336,7 @@ def get_models(payload):
 @token_required
 def clear_packets(payload):
 
-    packet_store.clear()
+    remote_live_store.clear()
 
     return jsonify(
         {

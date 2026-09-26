@@ -573,20 +573,17 @@ function LiveMonitoring() {
     };
     const initialize = async () => {
       try {
-        await startCapture();
         await pollLiveData();
       } catch (err) {
-        console.error("Failed to start live capture:", err);
+        console.error("Failed to initialize live monitoring:", err);
       }
     };
+
     initialize();
     const interval = setInterval(pollLiveData, 1000);
     return () => {
       active = false;
       clearInterval(interval);
-      stopCapture().catch((err) =>
-        console.error("Failed to stop live capture:", err),
-      );
     };
   }, [mode]);
 
