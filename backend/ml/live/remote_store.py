@@ -36,7 +36,10 @@ class RemoteLiveStore:
             return {"success": False, "message": "Unsupported model"}
         with self._lock:
             self.selected_model = model_name
-            self.model_used = self.AUTO_MODEL if model_name == "Auto" else model_name
+            if model_name == "Auto":
+                self.model_used = self.AUTO_MODEL
+            else:
+                self.model_used = model_name
             return {
                 "success": True,
                 "selected_model": self.selected_model,

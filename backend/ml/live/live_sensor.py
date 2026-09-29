@@ -42,6 +42,57 @@ load_dotenv(
 )
 
 
+def sync_model(reset_to_auto=False):
+    """
+    Synchronize the local sensor's ML model with the
+    model selected on the Render backend.
+
+    If reset_to_auto=True, the remote live session
+    starts with Auto -> XGBoost.
+    """
+
+    try:
+        payload = {
+            "packets": [],
+            "detections": [],
+            "reset_model": reset_to_auto,
+        }
+
+        response = requests.post(
+            f"{RENDER_API_URL}/api/live/ingest",
+            json=payload,
+            headers={
+                "X-Live-Sensor-Key": LIVE_SENSOR_KEY,
+                "Content-Type": "application/json",
+            },
+            timeout=10,
+        )
+
+        if response.status_code != 200:
+            print("[SENSOR] Model sync failed:", response.status_code, response.text)
+            return False
+
+        result = response.json()
+
+        selected_model = result.get("selected_model", "Auto")
+
+        model_used = result.get("model_used", "XGBoost")
+
+        model_result = live_capture.set_model(selected_model)
+
+        if not model_result.get("success"):
+            print("[SENSOR] Could not apply model:", model_result.get("message"))
+            return False
+
+        print("[SENSOR] Model:", selected_model, "->", model_used)
+
+        return True
+
+    except requests.RequestException as error:
+        print("[SENSOR] Model sync connection error:", error)
+        return False
+
+
 # ==========================================================
 # EXISTING IDS COMPONENTS
 # ==========================================================
@@ -72,19 +123,9 @@ def send_live_data():
 
     detections = live_capture.get_detections()
 
-    model_info = live_capture.get_selected_model()
-
     payload = {
         "packets": packets,
         "detections": detections,
-        "selected_model": model_info.get(
-            "selected_model",
-            "Auto",
-        ),
-        "model_used": model_info.get(
-            "model_used",
-            "XGBoost",
-        ),
     }
 
     try:
@@ -100,15 +141,36 @@ def send_live_data():
         )
 
         if response.status_code == 200:
-
             result = response.json()
+
+            selected_model = result.get("selected_model", "Auto")
+
+            current_model = live_capture.get_selected_model().get(
+                "selected_model", "Auto"
+            )
+
+            # Dashboard changed the model.
+            if selected_model != current_model:
+
+                model_result = live_capture.set_model(selected_model)
+
+                if model_result.get("success"):
+                    print(
+                        "[SENSOR] Model changed:",
+                        model_result["selected_model"],
+                        "->",
+                        model_result["model_used"],
+                    )
+                else:
+                    print("[SENSOR] Model change failed:", model_result.get("message"))
 
             print(
                 "[SENSOR] Sent:",
                 result.get("packets", 0),
                 "packets |",
                 result.get("detections", 0),
-                "detections",
+                "detections | Model:",
+                result.get("model_used", "XGBoost"),
             )
 
             return True
@@ -146,17 +208,18 @@ def main():
     )
     print("Dataset: CICIDS2017")
     print("Features: 77")
-    print(
-        "Model:",
-        live_capture.get_selected_model()["model_used"],
-    )
+    print("Model: Auto -> XGBoost")
     print("=" * 60)
     print()
 
     if not LIVE_SENSOR_KEY:
+        print("[SENSOR] ERROR: LIVE_SENSOR_KEY is not configured.")
+        return
 
-        print("[SENSOR] ERROR:" " LIVE_SENSOR_KEY is not configured.")
-
+    # Start every new live session in Auto mode.
+    # Auto currently maps to XGBoost.
+    if not sync_model(reset_to_auto=True):
+        print("[SENSOR] Could not initialize the remote live session.")
         return
 
     # ------------------------------------------------------
@@ -174,6 +237,8 @@ def main():
     print("[SENSOR] Local packet capture started.")
 
     print("[SENSOR] Monitoring Windows network traffic...")
+
+    print("[SENSOR] Dashboard controls model selection.")
 
     print()
 
