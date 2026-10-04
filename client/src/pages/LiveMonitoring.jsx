@@ -538,6 +538,78 @@ function LiveMonitoring() {
       ]
     : [];
 
+  // ============================================================
+  // LOCAL SENSOR CONTROL
+  // ============================================================
+  // Live Mode ON  -> start the local Windows sensor
+  // Live Mode OFF -> stop the local Windows sensor
+  // ============================================================
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const controlLocalSensor = async () => {
+      if (mode === "live") {
+        try {
+          console.log("[LIVE] Starting local sensor...");
+
+          const response = await startCapture();
+
+          if (cancelled) return;
+
+          if (response?.success) {
+            console.log(
+              "[LIVE] Local sensor started:",
+              response.selected_model || "Auto",
+              "->",
+              response.model_used || "XGBoost",
+            );
+          } else {
+            console.error(
+              "[LIVE] Local sensor could not start:",
+              response?.message || "Unknown error",
+            );
+          }
+        } catch (error) {
+          if (cancelled) return;
+
+          console.error("[LIVE] Local sensor connection failed:", error);
+        }
+
+        return;
+      }
+
+      // Demo mode / leaving Live Mode
+      try {
+        console.log("[LIVE] Stopping local sensor...");
+
+        const response = await stopCapture();
+
+        if (cancelled) return;
+
+        if (response?.success) {
+          console.log("[LIVE] Local sensor stopped.");
+        } else {
+          console.warn(
+            "[LIVE] Local sensor stop response:",
+            response?.message || "Unknown response",
+          );
+        }
+      } catch (error) {
+        if (cancelled) return;
+
+        // This is harmless if the local agent is not running.
+        console.warn("[LIVE] Local sensor is not reachable:", error);
+      }
+    };
+
+    controlLocalSensor();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
+
   useEffect(() => {
     if (mode !== "live") return;
     let active = true;
