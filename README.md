@@ -170,6 +170,37 @@ Live → Demo
 
 the local packet capture stops.
 
+# 🖥️ Application Screenshots
+
+## 🔐 Login
+
+![Sentinel AI IDS Login](docs/screenshots/login.png)
+
+## 📊 Security Dashboard
+
+![Sentinel AI IDS Dashboard](docs/screenshots/dashboard.png)
+
+## 📁 Network Traffic Analysis
+
+![CSV Network Traffic Analysis](docs/screenshots/upload-analysis.png)
+
+## 🚨 Intrusion Detection Results
+
+![Intrusion Detection Results](docs/screenshots/detection-results.png)
+
+## 🌐 Real-Time Live Monitoring
+
+![Live Network Monitoring](docs/screenshots/live-monitoring.png)
+
+## 🤖 Machine Learning Model Selection
+
+![ML Model Selection](docs/screenshots/model-selection.png)
+
+## 🏗️ System Architecture
+
+![Sentinel AI IDS Architecture](docs/screenshots/system-architecture.png)
+
+
 # 🧠 Machine Learning
 Sentinel AI IDS uses supervised machine learning techniques for network intrusion detection.
 Supported Algorithms
